@@ -17,7 +17,7 @@ def cleanAuthor(string):
 
     return cleaned_text
 
-def getLyrics(author, song):
+def getHTMLPage(author, song):
     cleanedAuthor = cleanAuthor(author)
     cleanedSong = song.lower().replace(" ", "-")
     URL = f"https://www.letras.com/{cleanedAuthor}/{cleanedSong}/"
@@ -28,7 +28,11 @@ def getLyrics(author, song):
     if (not page.ok) :
         raise Exception("Author not found.")
 
-    soup = BeautifulSoup(page.content, "html.parser")
+    return page.content
+
+def getLyrics(author, song):
+    page = getHTMLPage(author, song)
+    soup = BeautifulSoup(page, "html.parser")
 
     title = soup.find("h1", class_="head-title")
     # Si hubo una redirección
@@ -43,5 +47,4 @@ def getLyrics(author, song):
         cleaned_text = preprocess(str(para))
         result.append(cleaned_text)
 
-    return result
-    
+    return result, paragraps
