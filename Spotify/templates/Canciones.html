@@ -6,23 +6,27 @@
     <title>Lista de Canciones</title>
     <style>
         body {
-            background-image: url('{{ image_url }}');
-            background-size: cover;
-            background-position: center;
-            color: white; /* Ajusta el color del texto según sea necesario */
-            font-family: 'Arial', sans-serif; /* Cambia la fuente según tu preferencia */
-            margin: 0; /* Elimina el margen predeterminado del body */
-            padding: 0; /* Elimina el relleno predeterminado del body */
+            color: black; /* Color del texto */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Hace que el cuerpo ocupe el 100% de la altura de la ventana */
+            height: 100vh;
             text-align: center;
         }
 
+        .artist-image {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
         h1 {
-            padding: 10px; /* Añade espacio alrededor del texto */
+            padding: 10px;
             animation: neon 1.5s ease-in-out infinite alternate;
         }
 
@@ -36,16 +40,23 @@
         }
 
         ul {
-            list-style-type: none; /* Elimina los puntos de la lista */
+            list-style-type: none;
             padding: 0;
         }
 
         li {
-            margin: 5px 0; /* Añade espacio entre los elementos de la lista */
+            margin: 5px 0;
+        }
+
+        .average-info {
+            font-size: 18px;
+            margin-top: 20px;
+            color: black; /* Color del texto de la información del promedio */
         }
     </style>
 </head>
 <body>
+    <img src="{{ image_url }}" alt="Imagen del artista" class="artist-image">
     <h1>Canciones del álbum '{{ album_name }}' de '{{ artist_name }}'</h1>
     <ul>
         {% for track in tracks %}
