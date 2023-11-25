@@ -45,20 +45,20 @@ if len(items) > 0:
             total_duration_album += track['duration_ms']
             total_tracks_album += 1
 
-        # Promedio del álbum en minutos
+        # Promedio del álbum en minutos y segundos
         if total_tracks_album > 0:
             average_duration_seconds = total_duration_album / total_tracks_album / 1000
-            average_duration_minutes = average_duration_seconds / 60
-            print(f"Duración promedio del álbum '{album_name}': {average_duration_minutes:.2f} minutos")
+            average_minutes, average_seconds = divmod(average_duration_seconds, 60)
+            print(f"Duración promedio del álbum '{album_name}': {int(average_minutes):02d}:{int(average_seconds):02d} minutos")
 
         total_duration_all += total_duration_album
         total_tracks_all += total_tracks_album
 
-    # Promedio todas las canciones en minutos
+    # Promedio todas las canciones en minutos y segundos
     if total_tracks_all > 0:
         average_duration_seconds_all = total_duration_all / total_tracks_all / 1000
-        average_duration_minutes_all = average_duration_seconds_all / 60
-        print(f"Duración promedio de todas las canciones: {average_duration_minutes_all:.2f} minutos")
+        average_minutes_all, average_seconds_all = divmod(average_duration_seconds_all, 60)
+        print(f"Duración promedio de todas las canciones: {int(average_minutes_all):02d}:{int(average_seconds_all):02d} minutos")
     else:
         print("No se encontraron pistas para calcular el promedio final.")
 else:
