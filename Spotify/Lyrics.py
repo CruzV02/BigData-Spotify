@@ -30,7 +30,7 @@ def getHTMLPage(author, song):
 
     return page.content
 
-def getLyrics(author, song, html=False):
+def getLyrics(author, song):
     page = getHTMLPage(author, song)
     soup = BeautifulSoup(page, "html.parser")
 
@@ -42,12 +42,9 @@ def getLyrics(author, song, html=False):
     results = soup.find("div", class_="lyric-original")
     paragraps = results.find_all("p")
 
-    if(html):
-        return paragraps
-
     result = []
     for para in paragraps:
         cleaned_text = preprocess(str(para))
         result.append(cleaned_text)
 
-    return result
+    return result, paragraps
