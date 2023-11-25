@@ -23,6 +23,7 @@ def getHTMLPage(author, song):
     URL = f"https://www.letras.com/{cleanedAuthor}/{cleanedSong}/"
 
     page = requests.get(URL)
+    print("URL:", URL)  # Imprime la URL
 
     if (not page.ok) :
         raise Exception("Author not found.")
@@ -35,7 +36,7 @@ def getLyrics(author, song, html=False):
 
     title = soup.find("h1", class_="head-title")
     # Si hubo una redirección
-    if (not title.text == song):
+    if (not page.ok):
         raise Exception("Couldn't find a song with that name.")
 
     results = soup.find("div", class_="lyric-original")
