@@ -28,6 +28,8 @@ if len(items) > 0:
 
     total_duration_all = 0
     total_tracks_all = 0
+    total_albums = len(albums)
+    total_tracks = 0
 
     # Itera sobre cada álbum
     for album in albums:
@@ -53,6 +55,7 @@ if len(items) > 0:
 
         total_duration_all += total_duration_album
         total_tracks_all += total_tracks_album
+        total_tracks += len(tracks)
 
     # Promedio todas las canciones en minutos y segundos
     if total_tracks_all > 0:
@@ -61,5 +64,11 @@ if len(items) > 0:
         print(f"Duración promedio de todas las canciones: {int(average_minutes_all):02d}:{int(average_seconds_all):02d} minutos")
     else:
         print("No se encontraron pistas para calcular el promedio final.")
+
+    # Muestra el número total de álbumes y pistas
+    print(f"\nNúmero total de álbumes: {total_albums}")
+    print(f"Número total de pistas: {total_tracks}")
+
 else:
     print(f"No se encontró al artista '{artist_name}'.")
+
