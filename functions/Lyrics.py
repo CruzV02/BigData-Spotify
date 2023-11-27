@@ -35,9 +35,6 @@ def getLyrics(author, song):
     soup = BeautifulSoup(page, "html.parser")
 
     title = soup.find("h1", class_="head-title")
-    # Si hubo una redirección
-    if (not page.ok):
-        raise Exception("Couldn't find a song with that name.")
 
     results = soup.find("div", class_="lyric-original")
     paragraps = results.find_all("p")
