@@ -3,11 +3,11 @@
 
 {%block content%}
 <img src="{{ image_url }}" alt="Imagen del album" class="artist-image" />
-<h1>Canciones del album '{{ album_name }}'</h1>
+<h1>Canciones del álbum "{{ album_name }}" de {{ artist_name }}</h1>
 <ul>
   {% for track in tracks %}
   <li>
-    <a href="/{{album_id}}/{{ track['name'] }}">{{ track['name'] }}</a>
+    <a href="/{{artist_id}}/{{album_id}}/{{ track['name'] }}">{{ track['name'] }}</a>
   </li>
   {% endfor %}
 </ul>
