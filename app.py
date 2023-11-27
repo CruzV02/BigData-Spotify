@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config["FLASK_DEBUG"] = True
 app.config["SECRET_KEY"] = secrets.token_urlsafe(20)
 
-#Configuramos las rutas de la app
+#Configurar las rutas de la app
 app.register_blueprint(routes)
 
 if __name__ == "__main__":

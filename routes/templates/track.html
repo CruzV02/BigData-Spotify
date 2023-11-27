@@ -4,6 +4,11 @@
 {%block content%}
 <img src="{{ image_url }}" alt="Imagen del artista" class="artist-image" />
 <h1>"{{ track_name }}" de {{ artist_name }}</h1>
-<ul>
-</ul>
+<p>{{lyrics}}</p>
+<br>
+<p>Polarity</p>
+<p>{{polarity}}</p>
+<br>
+<p>Subjectivity</p>
+<p>{{subjectivity}}</p>
 {% endblock %}

@@ -11,7 +11,9 @@ routes = Blueprint("routes", __name__, template_folder="templates")
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
 
-data = pd.DataFrame(columns=["track_id", "track_name", "album_id", "artist_id", "lyrics"])
+data = pd.DataFrame(
+    columns=["track_id", "track_name", "album_id", "artist_id", "lyrics"]
+)
 
 
 @routes.route("/", methods=["POST", "GET"])
@@ -105,16 +107,26 @@ def album_page(artist, album):
 
 @routes.route("/<string:artist>/<string:album>/<string:track>/")
 def track_page(artist, album, track):
+    global data
     artist_name = spotify.artist(artist)["name"]
     album_name = spotify.album(album)["name"]
     result = spotify.track(track)
 
     track_name = result["name"]
     image_url = result["album"]["images"][0]["url"]
+    aux = data[data.track_id == track]
+    lyrics = aux.lyrics.values
+    polarity = aux.polarity.values
+    subjectivity = aux.subjectivity.values
+    print(data)
+    print(data[data.track_id == track].lyrics.values)
 
     return render_template(
         "track.html",
         track_name=track_name,
         artist_name=artist_name,
         image_url=image_url,
+        lyrics=lyrics,
+        polarity=polarity,
+        subjectivity=subjectivity,
     )
