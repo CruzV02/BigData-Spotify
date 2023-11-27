@@ -1,0 +1,14 @@
+{% extends "base.html" %} 
+{% block title %}{{ album_name }}{% endblock %} 
+
+{%block content%}
+<img src="{{ image_url }}" alt="Imagen del album" class="artist-image" />
+<h1>Canciones del album '{{ album_name }}'</h1>
+<ul>
+  {% for track in tracks %}
+  <li>
+    <a href="/{{album_id}}/{{ track['name'] }}">{{ track['name'] }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}
