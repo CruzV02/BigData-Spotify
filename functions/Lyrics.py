@@ -4,8 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 
 def preprocess(string):
-    cleaned_text = string.replace("<br/>", " ")
-    cleaned_text = cleaned_text.replace("<p>", "")
+    # Samuel dijo que queria una lista de listas...
+    # cleaned_text = string.replace("<br/>", " ")
+    cleaned_text = string.replace("<p>", "")
     cleaned_text = cleaned_text.replace("</p>", "")
 
     return cleaned_text
@@ -42,6 +43,7 @@ def getLyrics(author, song):
     result = []
     for para in paragraps:
         cleaned_text = preprocess(str(para))
-        result.append(cleaned_text)
+        text_list = cleaned_text.split("<br/>")
+        result.append(text_list)
 
-    return result, paragraps
+    return result
