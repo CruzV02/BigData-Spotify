@@ -4,8 +4,9 @@ import requests
 from bs4 import BeautifulSoup
 
 def preprocess(string):
-    cleaned_text = string.replace("<br/>", " ")
-    cleaned_text = cleaned_text.replace("<p>", "")
+    # Samuel dijo que queria una lista de listas...
+    # cleaned_text = string.replace("<br/>", " ")
+    cleaned_text = string.replace("<p>", "")
     cleaned_text = cleaned_text.replace("</p>", "")
 
     return cleaned_text
@@ -36,8 +37,8 @@ def getLyrics(author, song):
 
     title = soup.find("h1", class_="head-title")
     # Si hubo una redirección
-    if (not page.ok):
-        raise Exception("Couldn't find a song with that name.")
+    # if (not page.ok):
+    #     raise Exception("Couldn't find a song with that name.")
 
     results = soup.find("div", class_="lyric-original")
     paragraps = results.find_all("p")
@@ -45,6 +46,9 @@ def getLyrics(author, song):
     result = []
     for para in paragraps:
         cleaned_text = preprocess(str(para))
-        result.append(cleaned_text)
+        text_list = cleaned_text.split("<br/>")
+        result.append(text_list)
 
-    return result, paragraps
+    return result
+
+print(getLyrics("Bellakath", "Reggaeton Champagne"))
