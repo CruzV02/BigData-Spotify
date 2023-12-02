@@ -1,8 +1,4 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
-
-spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
-
+from functions.Spotify import spotify
 
 def getTrackData(track_id):
     data = spotify.audio_features(track_id)[0]
