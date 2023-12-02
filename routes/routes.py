@@ -6,13 +6,27 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 
 from functions.Lyrics import getLyrics
+from functions.Promedio import duration_minutes, getTrackData
 
 routes = Blueprint("routes", __name__, template_folder="templates")
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
 
 data = pd.DataFrame(
-    columns=["track_id", "track_name", "album_id", "artist_id", "lyrics"]
+    columns=[
+        "track_id",
+        "track_name",
+        "album_id",
+        "artist_id",
+        "lyrics",
+        "polarity",
+        "subjectivity",
+        "danceability",
+        "energy",
+        "speechiness",
+        "acousticness",
+        "duration",
+    ]
 )
 
 
@@ -76,7 +90,6 @@ def album_page(artist, album):
 
     # Análisis (Esto no debe ir aquí se quita luego)
     for track in tracks:
-        lyricData = getLyrics(artist_name, track["name"])[0]
         insert = pd.DataFrame(
             [
                 {
@@ -84,17 +97,27 @@ def album_page(artist, album):
                     "track_name": track["name"],
                     "album_id": album_id,
                     "artist_id": artist,
-                    "lyrics": lyricData[0],
+                    "lyrics": getLyrics(artist_name, track["name"])[0],
+                    "duration": track["duration_ms"],
                 }
             ]
         )
 
         data = pd.concat([data, insert], ignore_index=True)
-        data.lyrics = data.lyrics.astype(str)
-        data[["polarity", "subjectivity"]] = data["lyrics"].apply(
+        data[["polarity", "subjectivity"]] = data.lyrics.astype(str).apply(
             lambda Text: pd.Series(TextBlob(Text).sentiment)
         )
 
+        data[
+            [
+                "danceability",
+                "energy",
+                "speechiness",
+                "acousticness",
+            ]
+        ] = getTrackData(track["id"])
+
+    print(data)
     return render_template(
         "album.html",
         album_name=album,
@@ -108,18 +131,26 @@ def album_page(artist, album):
 @routes.route("/<string:artist>/<string:album>/<string:track>/")
 def track_page(artist, album, track):
     global data
+
+    if data.empty:
+        print("error")
+
     artist_name = spotify.artist(artist)["name"]
     album_name = spotify.album(album)["name"]
     result = spotify.track(track)
 
     track_name = result["name"]
     image_url = result["album"]["images"][0]["url"]
+
     aux = data[data.track_id == track]
     lyrics = aux.lyrics.values
-    polarity = aux.polarity.values
-    subjectivity = aux.subjectivity.values
-    print(data)
-    print(data[data.track_id == track].lyrics.values)
+    polarity = f"{aux.polarity.values[0]:.04f}"
+    subjectivity = f"{aux.subjectivity.values[0]:.04f}"
+    duration = duration_minutes(aux.duration.values)
+
+    print(type(polarity))
+
+    getTrackData(track)
 
     return render_template(
         "track.html",
@@ -129,4 +160,5 @@ def track_page(artist, album, track):
         lyrics=lyrics,
         polarity=polarity,
         subjectivity=subjectivity,
+        duration=duration,
     )
