@@ -1,19 +1,14 @@
-from flask import Blueprint, abort, redirect, render_template, url_for
-from textblob import TextBlob
+from flask import Blueprint, redirect, render_template, url_for
 from forms import SearchForm
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 
-from functions.Lyrics import getLyrics
+from functions.Analisis import album_analisis, track_analisis
+from functions.Promedio import convertDurationToMinutes, getAlbumDuration
+from functions.Spotify import spotify
 
 routes = Blueprint("routes", __name__, template_folder="templates")
 
-spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
-
-data = pd.DataFrame(
-    columns=["track_id", "track_name", "album_id", "artist_id", "lyrics"]
-)
+data = pd.DataFrame()
 
 
 @routes.route("/", methods=["POST", "GET"])
@@ -34,7 +29,6 @@ def artist_page(artist):
     if results["artists"]["total"] < 1:
         print("Error")
         return redirect(url_for("routes.index"))
-        # abort(404)
     else:
         items = results["artists"]["items"]
 
@@ -53,6 +47,9 @@ def artist_page(artist):
             lyrics += getLyrics(artist_name, track["name"])
         """
 
+        for album in albums:
+            album["duration"] = getAlbumDuration(album["id"])
+
     return render_template(
         "artist.html",
         artist_id=artist_id,
@@ -66,6 +63,7 @@ def artist_page(artist):
 def album_page(artist, album):
     global data
     data = data[0:0]
+
     artist_name = spotify.artist(artist)["name"]
     results = spotify.search(q=album + "artist:" + artist_name, type="album")
     items = results["albums"]["items"][0]
@@ -74,32 +72,12 @@ def album_page(artist, album):
     image_url = items["images"][0]["url"]
     tracks = spotify.album_tracks(album_id)["items"]
 
-    # Análisis (Esto no debe ir aquí se quita luego)
-    for track in tracks:
-        lyricData = getLyrics(artist_name, track["name"])[0]
-        insert = pd.DataFrame(
-            [
-                {
-                    "track_id": track["id"],
-                    "track_name": track["name"],
-                    "album_id": album_id,
-                    "artist_id": artist,
-                    "lyrics": lyricData[0],
-                }
-            ]
-        )
-
-        data = pd.concat([data, insert], ignore_index=True)
-        data.lyrics = data.lyrics.astype(str)
-        data[["polarity", "subjectivity"]] = data["lyrics"].apply(
-            lambda Text: pd.Series(TextBlob(Text).sentiment)
-        )
+    data = album_analisis(tracks, album_id, artist)
 
     return render_template(
         "album.html",
         album_name=album,
         artist_name=artist_name,
-        tracks=tracks,
         data=data,
         image_url=image_url,
     )
@@ -108,25 +86,26 @@ def album_page(artist, album):
 @routes.route("/<string:artist>/<string:album>/<string:track>/")
 def track_page(artist, album, track):
     global data
+
     artist_name = spotify.artist(artist)["name"]
     album_name = spotify.album(album)["name"]
     result = spotify.track(track)
-
-    track_name = result["name"]
     image_url = result["album"]["images"][0]["url"]
-    aux = data[data.track_id == track]
-    lyrics = aux.lyrics.values
-    polarity = aux.polarity.values
-    subjectivity = aux.subjectivity.values
-    print(data)
-    print(data[data.track_id == track].lyrics.values)
+
+    if data.empty or not track in data.track_id.values:
+        data = track_analisis(track, album, artist)
+
+    aux = data[data.track_id == track].iloc[0]
+    polarity = f"{aux.polarity:.04f}"
+    subjectivity = f"{aux.subjectivity:.04f}"
+    duration = convertDurationToMinutes(aux.duration)
 
     return render_template(
         "track.html",
-        track_name=track_name,
+        data=aux,
         artist_name=artist_name,
         image_url=image_url,
-        lyrics=lyrics,
+        duration=duration,
         polarity=polarity,
         subjectivity=subjectivity,
     )

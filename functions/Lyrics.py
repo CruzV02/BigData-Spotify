@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 def preprocess(string):
-    # Samuel dijo que queria una lista de listas...
+    # Samuel dijo que queria una lista de listas...Si lo dije xd
     # cleaned_text = string.replace("<br/>", " ")
     cleaned_text = string.replace("<p>", "")
     cleaned_text = cleaned_text.replace("</p>", "")

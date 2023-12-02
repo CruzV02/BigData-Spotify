@@ -1,20 +1,34 @@
-import spotipy
-import os
-from dotenv import load_dotenv
-from spotipy.oauth2 import SpotifyClientCredentials
+from functions.Spotify import spotify
 
-# Cargar las variables de entorno desde el archivo .env
-load_dotenv()
 
-# Configurar las credenciales de Spotify
-os.environ["SPOTIPY_CLIENT_ID"] = os.getenv("SPOTIPY_CLIENT_ID")
-os.environ["SPOTIPY_CLIENT_SECRET"] = os.getenv("SPOTIPY_CLIENT_SECRET")
-os.environ["SPOTIPY_REDIRECT_URI"] = os.getenv("SPOTIPY_REDIRECT_URI")
+def getAlbumDuration(album_id):
+    total_duration_album = 0
+    tracks = spotify.album_tracks(album_id)["items"]
 
-spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
+    # Itera sobre cada pista y suma la duración
+    for track in tracks:
+        total_duration_album += track["duration_ms"]
 
-artist_name = input("Ingresa el nombre del artista: ")
+    return total_duration_album
 
+
+def getTrackData(track_id):
+    data = spotify.audio_features(track_id)[0]
+    return (
+        data["danceability"],
+        data["energy"],
+        data["speechiness"],
+        data["acousticness"],
+    )
+
+
+def convertDurationToMinutes(duration_ms):
+    duration_sec, duration_ms = divmod(int(duration_ms), 1000)
+    duration_min, duration_sec = divmod(int(duration_sec), 60)
+    return f"{duration_min:02d}:{duration_sec:02d}"
+
+
+"""
 # Busca al artista
 results = spotify.search(q='artist:' + artist_name, type='artist')
 items = results['artists']['items']
@@ -71,4 +85,4 @@ if len(items) > 0:
 
 else:
     print(f"No se encontró al artista '{artist_name}'.")
-
+"""
