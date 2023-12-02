@@ -1,14 +1,44 @@
-{% extends "base.html" %} 
-{% block title %}{{ artist_name }}{% endblock %} 
-
+{% extends "base.html" %} {% block title %}{{ artist_name }}{% endblock %}
 {%block content%}
-<img src="{{ image_url }}" alt="Imagen del artista" class="artist-image" />
-<h1>Albumes de '{{ artist_name }}'</h1>
-<ul>
-  {% for album in albums %}
-  <li>
-    <a href="/{{artist_id}}/{{ album['name'] }}">{{ album['name'] }}</a>
-  </li>
-  {% endfor %}
-</ul>
+
+<section class="pb-3 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <img
+        src="{{ image_url }}"
+        alt="Imagen del artista"
+        class="artist-image"
+      />
+      <h1 class="neon">Albumes de {{ artist_name }}</h1>
+    </div>
+  </div>
+</section>
+
+<div class="album py-5 bg-body-tertiary">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {% for album in albums %}
+      <div class="col">
+        <div class="card shadow-sm">
+          <img
+            src="{{ album["images"][0]["url"] }}"
+            width="100%"
+            height="225"
+            alt="Imagen del artista"
+            class="bd-placeholder-img card-img-top"
+          />
+          <div class="card-body">
+            <h5 class="card-title">{{ album['name'] }}</h5>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-body-secondary">Duración: {{convertMin(album["duration"])}} minutos</small>
+            </div>
+            <hr />
+            <a href="/{{artist_id}}/{{ album['name'] }}" class="">Ver Album</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endblock %}

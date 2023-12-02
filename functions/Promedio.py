@@ -1,5 +1,17 @@
 from functions.Spotify import spotify
 
+
+def getAlbumDuration(album_id):
+    total_duration_album = 0
+    tracks = spotify.album_tracks(album_id)["items"]
+
+    # Itera sobre cada pista y suma la duración
+    for track in tracks:
+        total_duration_album += track["duration_ms"]
+
+    return total_duration_album
+
+
 def getTrackData(track_id):
     data = spotify.audio_features(track_id)[0]
     return (
@@ -10,7 +22,7 @@ def getTrackData(track_id):
     )
 
 
-def duration_minutes(duration_ms):
+def convertDurationToMinutes(duration_ms):
     duration_sec, duration_ms = divmod(int(duration_ms), 1000)
     duration_min, duration_sec = divmod(int(duration_sec), 60)
     return f"{duration_min:02d}:{duration_sec:02d}"

@@ -6,8 +6,12 @@ from functions.Promedio import getTrackData
 from functions.Spotify import spotify
 
 
-def album_analisis(tracks=[], album_id="0", artist_id="0", ):
-    df=pd.DataFrame()
+def album_analisis(
+    tracks=[],
+    album_id="0",
+    artist_id="0",
+):
+    df = pd.DataFrame()
     for track in tracks:
         insert = pd.DataFrame(
             [
@@ -39,7 +43,8 @@ def album_analisis(tracks=[], album_id="0", artist_id="0", ):
     return df
 
 
-def track_analisis(track_id="", album_id="0", artist_id="0", df=pd.DataFrame()):
+def track_analisis(track_id="", album_id="0", artist_id="0"):
+    df = pd.DataFrame()
     track = spotify.track(track_id)
 
     insert = pd.DataFrame(

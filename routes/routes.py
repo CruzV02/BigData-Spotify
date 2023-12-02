@@ -3,7 +3,7 @@ from forms import SearchForm
 import pandas as pd
 
 from functions.Analisis import album_analisis, track_analisis
-from functions.Promedio import duration_minutes
+from functions.Promedio import convertDurationToMinutes, getAlbumDuration
 from functions.Spotify import spotify
 
 routes = Blueprint("routes", __name__, template_folder="templates")
@@ -47,6 +47,9 @@ def artist_page(artist):
             lyrics += getLyrics(artist_name, track["name"])
         """
 
+        for album in albums:
+            album["duration"] = getAlbumDuration(album["id"])
+
     return render_template(
         "artist.html",
         artist_id=artist_id,
@@ -69,7 +72,7 @@ def album_page(artist, album):
     image_url = items["images"][0]["url"]
     tracks = spotify.album_tracks(album_id)["items"]
 
-    data = album_analisis(tracks, album_id, artist, data)
+    data = album_analisis(tracks, album_id, artist)
 
     return render_template(
         "album.html",
@@ -90,12 +93,12 @@ def track_page(artist, album, track):
     image_url = result["album"]["images"][0]["url"]
 
     if data.empty or not track in data.track_id.values:
-        data = track_analisis(track, album, artist, data)
+        data = track_analisis(track, album, artist)
 
     aux = data[data.track_id == track].iloc[0]
     polarity = f"{aux.polarity:.04f}"
     subjectivity = f"{aux.subjectivity:.04f}"
-    duration = duration_minutes(aux.duration)
+    duration = convertDurationToMinutes(aux.duration)
 
     return render_template(
         "track.html",
