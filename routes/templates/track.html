@@ -4,8 +4,13 @@
 {%block content%}
 <img src="{{ image_url }}" alt="Imagen del artista" class="artist-image" />
 <h1>"{{ track_name }}" de {{ artist_name }}</h1>
-{% for lyric in lyrics[0] %}
-    <p>{{lyric}}</p>
+{% for para in lyrics %}
+    <div>
+    {% for verse in para %}
+        <p class="para">{{verse}}</p>
+    {% endfor %}
+    </div>
+    <br>
 {% endfor %}
 <br>
 <p>Polarity</p>

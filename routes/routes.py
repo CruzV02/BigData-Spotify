@@ -97,7 +97,7 @@ def album_page(artist, album):
                     "track_name": track["name"],
                     "album_id": album_id,
                     "artist_id": artist,
-                    "lyrics": getLyrics(artist_name, track["name"])[0],
+                    "lyrics": getLyrics(artist_name, track["name"]),
                     "duration": track["duration_ms"],
                 }
             ]
@@ -117,7 +117,6 @@ def album_page(artist, album):
             ]
         ] = getTrackData(track["id"])
 
-    print(data)
     return render_template(
         "album.html",
         album_name=album,
@@ -143,12 +142,10 @@ def track_page(artist, album, track):
     image_url = result["album"]["images"][0]["url"]
 
     aux = data[data.track_id == track]
-    lyrics = aux.lyrics.values
+    lyrics = aux.lyrics.values[0]
     polarity = f"{aux.polarity.values[0]:.04f}"
     subjectivity = f"{aux.subjectivity.values[0]:.04f}"
     duration = duration_minutes(aux.duration.values)
-
-    print(type(polarity))
 
     getTrackData(track)
 

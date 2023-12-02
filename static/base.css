@@ -46,3 +46,7 @@ li {
   margin-top: 20px;
   color: black; /* Color del texto de la información del promedio */
 }
+
+.para {
+  margin: 3;
+}
