@@ -32,7 +32,21 @@
           <text x="50%" y="50%" fill="#eceeef" dy=".3em">Grafica</text>
         </svg>
         <h4 class="fw-semibold mb-0 text-body-emphasis">Polaridad</h4>
-        <p class="text-body-secondary">{{polarity}}</p>
+
+        
+        {% if polarity > 0.2 %}
+        <p class="text-success">
+          {{'{0:.4f} (Positivo)'.format(polarity)}}
+        </p>
+        {% elif polarity < -0.2 %}
+        <p class="text-danger">
+          {{'{0:.4f} (Negativo)'.format(polarity)}}
+        </p>
+        {% else %}
+        <p class="text-body-secondary">
+          {{'{0:.4f} (Neutro)'.format(polarity)}}
+        </p>
+        {% endif %}
       </div>
 
       <div class="col d-flex flex-column gap-2 align-items-center">

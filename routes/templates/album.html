@@ -31,9 +31,19 @@
         <h4 class="fw-semibold mb-0 text-body-emphasis">
           Polaridad promedio del album
         </h4>
-        <p class="text-body-secondary">
-          {{'{0:.4f}'.format(data.polarity.mean())}}
+        {% if data.polarity.mean() > 0.1 %}
+        <p class="text-success">
+          {{'{0:.4f} (Positivo)'.format(data.polarity.mean())}}
         </p>
+        {% elif data.polarity.mean() < -0.1 %}
+        <p class="text-danger">
+          {{'{0:.4f} (Negativo)'.format(data.polarity.mean())}}
+        </p>
+        {% else %}
+        <p class="text-body-secondary">
+          {{'{0:.4f} (Neutro)'.format(data.polarity.mean())}}
+        </p>
+        {% endif %}
       </div>
 
       <div class="col d-flex flex-column gap-2 align-items-center">
