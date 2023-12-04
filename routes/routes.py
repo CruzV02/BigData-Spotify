@@ -96,7 +96,7 @@ def track_page(artist, album, track):
         data = track_analisis(track, album, artist)
 
     aux = data[data.track_id == track].iloc[0]
-    polarity = f"{aux.polarity:.04f}"
+    polarity = aux.polarity
     subjectivity = f"{aux.subjectivity:.04f}"
     duration = convertDurationToMinutes(aux.duration)
 
