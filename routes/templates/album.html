@@ -15,6 +15,8 @@
       <option value="default">Predeterminado</option>
       <option value="alphabeticalAsc">Alfabético (A-Z)</option>
       <option value="alphabeticalDesc">Alfabético (Z-A)</option>
+      <option value="subjectivity">Subjetividad</option>
+      <option value = "tiempo"> Duración</option>
     </select>
   </div>
 
@@ -103,6 +105,59 @@
                 $("#album-cards").empty().append(sortedSongs);
 
             }
+
+            if (selectedOption === "subjectivity") {
+    console.log("Seleccionaste Subjetividad");
+
+    var albumCards = $("#album-cards");
+
+    var sortedSongs = albumCards.children(".row-cols-md-3 .col").toArray().sort(function(a, b) {
+        var subjectivityA = parseFloat($(a).find(".text-body-secondary:contains('Subjetividad:')").text().split(':')[1].trim()) || 0;
+        var subjectivityB = parseFloat($(b).find(".text-body-secondary:contains('Subjetividad:')").text().split(':')[1].trim()) || 0;
+
+        console.log("Subjectivity A:", subjectivityA);
+        console.log("Subjectivity B:", subjectivityB);
+
+        return subjectivityB - subjectivityA; // Cambiado para ordenar de mayor a menor subjetividad
+    });
+
+    console.log("Songs ordenadas por subjetividad:", sortedSongs);
+
+    albumCards.empty().append(sortedSongs);
+}
+
+       if (selectedOption === "tiempo") {
+       console.log("Seleccionaste Tiempo");
+
+       var albumCards = $("#album-cards");
+
+        var sortedSongs = albumCards.children(".row-cols-md-3 .col").toArray().sort(function(a, b) {
+          var timeA = convertToSeconds($(a).find(".text-body-secondary:contains('Duración:')").text());
+          var timeB = convertToSeconds($(b).find(".text-body-secondary:contains('Duración:')").text());
+
+        console.log("Tiempo A:", timeA);
+        console.log("Tiempo B:", timeB);
+
+        return timeA - timeB; // Cambiado para ordenar de menor a mayor tiempo
+    });
+
+    console.log("Songs ordenadas por tiempo:", sortedSongs);
+
+    albumCards.empty().append(sortedSongs);
+}
+
+function convertToSeconds(timeString) {
+    var matches = timeString.match(/(\d+):(\d+)/);
+    if (matches) {
+        var minutes = parseInt(matches[1]);
+        var seconds = parseInt(matches[2]);
+        return minutes * 60 + seconds;
+    } else {
+        return 0; // Si no hay coincidencias, devuelve 0 segundos
+    }
+}
+
+
         });
     });
 </script>
